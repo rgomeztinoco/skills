@@ -1,17 +1,19 @@
 ---
 name: implement
-description: "Implement a piece of work based on a spec or set of tickets."
+description: "Implement work from a specification or tickets through verification, review, and submission."
 disable-model-invocation: true
 ---
 
 Implement the work described by the user in the spec or tickets.
 
-Use /tdd where possible, at pre-agreed seams.
+Use `/tdd` at agreed seams when a focused failing test can express the behavior.
 
-Run typechecking regularly, single test files regularly, and the full test suite once at the end.
+After each coherent change, run the relevant test file and typecheck. Run the full test suite once at the end.
 
-If the changes include frontend code, check visually, not just with tests.
+For frontend changes, run the application and visually verify.
 
-Once done, use /code-review to review the work.
+When implementation and checks are complete, run `/code-review` and address its findings.
 
-When done, create a gh or graphite stack depending on the context and submit it for review. The stack should include a description of the work done, any relevant context, any questions or concerns you have, and it should close the associated issue or issues.
+Stack the implementation using the repository's existing workflow, GitHub or Graphite. Document changes, relevant context, and concerns in its pull requests. Add issue-closing references, so issues close on merge.
+
+Publish as ready after implementation, checks, and review are complete. Otherwise, publish as draft for early feedback.
