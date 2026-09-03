@@ -4,6 +4,8 @@ description: "Implement work from a specification or tickets through verificatio
 disable-model-invocation: true
 ---
 
+First assign yourself to the issue.
+
 Implement the work described by the user in the spec or tickets.
 
 Use `/tdd` at agreed seams when a focused failing test can express the behavior.
@@ -14,6 +16,8 @@ For frontend changes, run the application and visually verify.
 
 When implementation and checks are complete, run `/code-review` and address its findings.
 
-Stack the implementation using the repository's existing workflow, GitHub or Graphite. Document changes, relevant context, and concerns in its pull requests. Add issue-closing references, so issues close on merge.
+Stack the implementation using the repository's existing workflow, GitHub or Graphite. Document changes, relevant context, and concerns in its pull requests.
+
+Close the issue if the implementation is complete and ready for review.
 
 Publish as ready after implementation, checks, and review are complete. Otherwise, publish as draft for early feedback.
