@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Glance board</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <strong id="brand-name"></strong>
+    <nav class="tabs" aria-label="Views">
+      <a href="/" aria-current="page">Board</a>
+      <a href="/map.html">Map</a>
+    </nav>
+  </div>
+  <div class="progress" id="progress" aria-live="polite"></div>
+  <div class="signals" id="signals" aria-label="Orchestrator signals"></div>
+  <div class="refresh">
+    <span class="muted" id="refreshed"></span>
+    <button type="button" class="btn" id="refresh-btn">Refresh</button>
+  </div>
+</header>
+
+<section class="filters" aria-label="Filters">
+  <input type="search" id="search" placeholder="Search  /" aria-label="Search issues" autocomplete="off">
+  <div class="seg" id="f-track" role="group" aria-label="Track"></div>
+  <div class="seg" id="f-kind" role="group" aria-label="Kind"></div>
+  <div class="seg" id="f-risk" role="group" aria-label="Risk"></div>
+  <button type="button" class="toggle" id="f-flag" aria-pressed="false">only ⚠</button>
+  <button type="button" class="toggle" id="f-startable" aria-pressed="false">startable now</button>
+  <button type="button" class="link-btn" id="f-clear">clear</button>
+  <span class="muted" id="visible-count"></span>
+  <span class="keys muted"><kbd>j</kbd><kbd>k</kbd> move · <kbd>h</kbd><kbd>l</kbd> column · <kbd>Enter</kbd> open · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>0</kbd> mark · <kbd>Esc</kbd> close</span>
+</section>
+
+<main class="board" id="board" aria-label="Board"></main>
+
+<aside class="drawer" id="drawer" aria-label="Issue detail" hidden>
+  <div class="d-bar">
+    <span class="muted" id="d-pos"></span>
+    <div class="d-nav">
+      <button type="button" class="icon-btn" id="d-prev" aria-label="Previous issue (k)">↑</button>
+      <button type="button" class="icon-btn" id="d-next" aria-label="Next issue (j)">↓</button>
+      <button type="button" class="icon-btn" id="d-close" aria-label="Close (Esc)">✕</button>
+    </div>
+  </div>
+  <div class="d-scroll" id="d-scroll">
+    <div id="d-head"></div>
+    <section class="d-ask" id="d-ask" aria-label="Orchestrator question" hidden><div id="d-ask-box"></div></section>
+    <div class="glance-row" id="d-glance" role="group" aria-label="Glance mark">
+      <button type="button" class="g-btn g-ok" data-value="ok"><span class="g-ico">✓</span> Looks right <kbd>1</kbd></button>
+      <button type="button" class="g-btn g-fix" data-value="fix"><span class="g-ico">✗</span> Needs fix <kbd>2</kbd></button>
+      <button type="button" class="g-btn g-q" data-value="question"><span class="g-ico">?</span> Question <kbd>3</kbd></button>
+      <button type="button" class="g-btn g-clear" data-value="" aria-label="Clear mark (0)">Clear <kbd>0</kbd></button>
+    </div>
+    <div id="d-card"></div>
+    <section class="d-sec" id="d-comments" aria-label="Comments">
+      <h3>Comments</h3>
+      <div id="d-thread"></div>
+      <div class="composer" id="d-composer">
+        <textarea id="d-comment" rows="2" placeholder="Comment for the orchestrator  (Enter sends, Shift+Enter newline)" aria-label="Comment"></textarea>
+        <button type="button" class="btn" id="d-send">Send</button>
+      </div>
+    </section>
+    <div id="d-rel"></div>
+    <div id="d-body"></div>
+  </div>
+</aside>
+
+<dialog id="confirm" aria-labelledby="confirm-title">
+  <form method="dialog">
+    <h2 id="confirm-title"></h2>
+    <p id="confirm-text"></p>
+    <div class="confirm-ids" id="confirm-ids"></div>
+    <div class="confirm-actions">
+      <button value="cancel" class="btn" id="confirm-cancel" autofocus>Cancel</button>
+      <button value="ok" class="btn primary" id="confirm-ok">Mark all ✓</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="/static/app.js"></script>
+</body>
+</html>

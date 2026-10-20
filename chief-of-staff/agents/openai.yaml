@@ -1,0 +1,5 @@
+interface:
+  display_name: "Chief of staff"
+  short_description: "Orchestrate an epic from tickets to merged PRs"
+policy:
+  allow_implicit_invocation: false

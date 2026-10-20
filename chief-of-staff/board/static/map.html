@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Map</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.viz-root {
+  color-scheme: light;
+  --surface-1: #fcfcfb;
+  --page: #f9f9f7;
+  --ink-1: #0b0b0b;
+  --ink-2: #52514e;
+  --ink-3: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --ring: rgba(11,11,11,0.10);
+  --agent: #2a78d6;
+  --human: #eb6834;
+  --grill: #1baf7a;
+  --hl: #0b0b0b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .viz-root {
+    color-scheme: dark;
+    --surface-1: #1a1a19; --page: #0d0d0d; --ink-1: #f0efec; --ink-2: #c3c2b7; --ink-3: #898781;
+    --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10);
+    --agent: #3987e5; --human: #d95926; --grill: #199e70; --hl: #f0efec;
+  }
+}
+:root[data-theme="dark"] .viz-root {
+  color-scheme: dark;
+  --surface-1: #1a1a19; --page: #0d0d0d; --ink-1: #f0efec; --ink-2: #c3c2b7; --ink-3: #898781;
+  --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10);
+  --agent: #3987e5; --human: #d95926; --grill: #199e70; --hl: #f0efec;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+.viz-root { font: 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--page); color: var(--ink-1); min-height: 100vh; padding: 20px 24px 48px; }
+h1 { font-size: 18px; margin: 0 0 2px; }
+h2 { font-size: 15px; margin: 28px 0 8px; }
+.sub { color: var(--ink-2); margin: 0 0 14px; }
+.bar { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 12px; }
+.seg { display: inline-flex; border: 1px solid var(--axis); border-radius: 8px; overflow: hidden; }
+.seg button { background: var(--surface-1); color: var(--ink-2); border: 0; padding: 5px 10px; font: inherit; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--axis); }
+.seg button[aria-pressed="true"] { background: var(--ink-1); color: var(--surface-1); }
+.ctl-label { color: var(--ink-3); margin-right: 4px; }
+input[type=search] { font: inherit; padding: 5px 8px; border: 1px solid var(--axis); border-radius: 8px; background: var(--surface-1); color: var(--ink-1); width: 150px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; color: var(--ink-2); margin-bottom: 10px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.sw.ring { background: var(--surface-1); border: 2px solid var(--hl); }
+.sw.dash { background: var(--surface-1); border: 1.5px dashed var(--ink-3); }
+.card { background: var(--surface-1); border: 1px solid var(--ring); border-radius: 12px; padding: 12px; overflow: auto; }
+.stage { position: relative; }
+svg.edges { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+svg.edges path { fill: none; stroke: var(--axis); stroke-width: 1; opacity: .55; transition: opacity .12s; }
+svg.edges path.on { stroke: var(--hl); stroke-width: 1.6; opacity: 1; }
+svg.edges path.off { opacity: .06; }
+.colhead { position: absolute; top: 0; color: var(--ink-3); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
+.colband { position: absolute; top: 22px; bottom: 0; border-left: 1px solid var(--grid); }
+.node { position: absolute; height: 22px; width: 70px; display: flex; align-items: center; gap: 5px; padding: 0 6px 0 0; border: 1px solid var(--axis); border-radius: 6px; background: var(--surface-1); color: var(--ink-1); font: 600 11.5px/1 system-ui, sans-serif; cursor: pointer; text-decoration: none; overflow: hidden; transition: opacity .12s; }
+.node::before { content: ""; width: 5px; align-self: stretch; background: var(--k); }
+.node.frontier { border: 2px solid var(--hl); }
+.node.after { border-style: dashed; opacity: .7; }
+.node.dim { opacity: .15; }
+.node.focus { outline: 2px solid var(--hl); outline-offset: 2px; }
+.node .t { font-weight: 500; color: var(--ink-3); font-size: 10px; margin-left: auto; }
+.tip { position: fixed; z-index: 10; max-width: 380px; background: var(--surface-1); border: 1px solid var(--ring); box-shadow: 0 6px 24px rgba(0,0,0,.18); border-radius: 10px; padding: 10px 12px; pointer-events: none; display: none; }
+.tip .tt { font-weight: 600; margin-bottom: 6px; }
+.tip .row { color: var(--ink-2); }
+.tip .row b { color: var(--ink-1); font-weight: 600; }
+.pill { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--axis); border-radius: 999px; padding: 0 8px; font-size: 11px; color: var(--ink-2); white-space: nowrap; margin: 1px 2px 1px 0; }
+.pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--k); display: inline-block; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+th { color: var(--ink-3); font-weight: 500; font-size: 12px; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+a { color: inherit; }
+td a.id { font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--axis); }
+.track-h { display: flex; align-items: baseline; gap: 10px; }
+.track-h small { color: var(--ink-3); font-weight: 400; }
+.stats { display: flex; gap: 28px; margin: 6px 0 16px; }
+.stat b { display: block; font-size: 22px; }
+.stat span { color: var(--ink-3); font-size: 12px; }
+.board-nav { display: flex; align-items: center; gap: 16px; margin: -8px 0 16px; }
+.board-nav strong { font-size: 14px; }
+.board-tabs { display: inline-flex; background: var(--grid); border-radius: 8px; padding: 2px; }
+.board-tabs a { text-decoration: none; padding: 4px 12px; border-radius: 6px; color: var(--ink-2); }
+.board-tabs a[aria-current="page"] { background: var(--surface-1); color: var(--ink-1); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.board-tabs a:focus-visible { outline: 2px solid var(--agent); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<div class="viz-root">
+  <nav class="board-nav" aria-label="Views"><strong id="brand-name"></strong><span class="board-tabs"><a href="/">Board</a><a href="/map.html" aria-current="page">Map</a></span></nav>
+  <h1 id="map-title">Plan and dependency map</h1>
+  <p class="sub"><span id="epics"></span>Hover or focus an issue to trace what blocks it and what it unblocks; click to open it on GitHub.</p>
+  <div class="stats" id="stats"></div>
+  <div class="bar">
+    <span><span class="ctl-label">Columns</span><span class="seg" id="g-layout"><button data-v="depth" aria-pressed="true">Dependency depth</button><button data-v="phase" aria-pressed="false">Phase</button></span></span>
+    <span><span class="ctl-label">Show</span><span class="seg" id="g-filter"><button data-v="all" aria-pressed="true">All</button><button data-v="frontier">Startable now</button></span></span>
+    <input type="search" id="q" placeholder="Find issue" aria-label="Find issue">
+  </div>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--agent)"></i>ready-for-agent</span>
+    <span><i class="sw" style="background:var(--human)"></i>ready-for-human</span>
+    <span><i class="sw" style="background:var(--grill)"></i>needs-grilling</span>
+    <span><i class="sw ring"></i>startable now (no open blocker)</span>
+    <span><i class="sw dash"></i>after launch</span>
+    <span style="color:var(--ink-3)">Lines: blocker → blocked</span>
+  </div>
+  <div class="card"><div class="stage" id="stage"><svg class="edges" id="edges"></svg></div></div>
+  <h2>The plan, by track</h2>
+  <div id="tables"></div>
+  <div class="tip" id="tip" role="tooltip"></div>
+</div>
+<script type="module">
+const getJson = async (url) => { const r = await fetch(url, { cache: "no-store" }); return r.ok ? r.json() : null; };
+const [api, plan, notesFile] = await Promise.all([getJson("/api/data"), getJson("/data/plan.json"), getJson("/data/map-notes.json")]);
+const meta = { name: "Board", epics: [], repos: {}, ...(api?.meta || {}) };
+const data = Array.isArray(plan) ? plan : (api?.issues || []).filter(i => i.state === "open").map(i => ({ ...i, blockedBy: i.openBlockers }));
+const byId = Object.fromEntries(data.map(d => [d.id, d]));
+const kids = Object.fromEntries(data.map(d => [d.id, []]));
+data.forEach(d => d.blockedBy.forEach(b => kids[b] && kids[b].push(d.id)));
+const KIND = { agent: "ready-for-agent", human: "ready-for-human", grill: "needs-grilling" };
+const TRACK_NOTES = notesFile?.tracks || {};
+const NOTES = notesFile?.notes || {};
+const EPIC_NOTES = notesFile?.epics || {};
+const TRACKS = [...new Set([...Object.keys(TRACK_NOTES), ...[...new Set(data.map(d => d.track))].sort()])];
+const trackName = t => TRACK_NOTES[t]?.name || (t === "?" ? "Unplanned" : `Track ${t}`);
+
+document.getElementById("brand-name").textContent = meta.name;
+document.getElementById("map-title").textContent = `${meta.name} — plan and dependency map`;
+document.title = `${meta.name} map`;
+const epicsEl = document.getElementById("epics");
+meta.epics.forEach((epic, i) => {
+  const [repo, num] = epic.split("#");
+  const a = document.createElement("a"); a.href = `https://github.com/${repo}/issues/${num}`; a.textContent = `${repo.split("/").pop()}#${num}`;
+  if (i) epicsEl.append(i === meta.epics.length - 1 ? " and " : ", ");
+  epicsEl.append(a);
+  const prefix = meta.repos[repo];
+  const note = EPIC_NOTES[epic];
+  if (note || prefix) {
+    epicsEl.append(" (", note ? note + (prefix ? ", " : "") : "");
+    if (prefix) { const b = document.createElement("b"); b.textContent = prefix; epicsEl.append(b); }
+    epicsEl.append(")");
+  }
+});
+if (meta.epics.length) epicsEl.append(". ");
+if (data.length) document.getElementById("q").placeholder = `Find, e.g. ${data[0].id}`;
+const filterSeg = document.getElementById("g-filter");
+TRACKS.filter(t => t !== "?" && data.some(d => d.track === t)).forEach(t => {
+  const b = document.createElement("button"); b.dataset.v = t; b.textContent = `Track ${t}`;
+  filterSeg.insertBefore(b, filterSeg.lastElementChild);
+});
+const memo = {};
+const reach = (id, dir) => {
+  const key = dir + id;
+  if (memo[key]) return memo[key];
+  const out = new Set();
+  const next = dir === "down" ? kids[id] : byId[id].blockedBy.filter(b => byId[b]);
+  next.forEach(n => { out.add(n); reach(n, dir).forEach(x => out.add(x)); });
+  return (memo[key] = out);
+};
+const depthMemo = {};
+const depth = id => depthMemo[id] ??= 1 + Math.max(0, ...byId[id].blockedBy.filter(b => byId[b]).map(depth));
+data.forEach(d => { d.depth = depth(d.id); d.down = reach(d.id, "down").size; d.frontier = d.blockedBy.length === 0; });
+
+const statsEl = document.getElementById("stats");
+[[data.length, "open sub-issues"], [data.filter(d => d.frontier).length, "startable now"], [data.filter(d => d.kind === "grill").length, "need grilling"], [Math.max(0, ...data.map(d => d.depth)), "longest chain"]]
+  .forEach(([v, l]) => { const s = document.createElement("div"); s.className = "stat"; const b = document.createElement("b"); b.textContent = v; const sp = document.createElement("span"); sp.textContent = l; s.append(b, sp); statsEl.append(s); });
+
+const stage = document.getElementById("stage");
+const svg = document.getElementById("edges");
+const tip = document.getElementById("tip");
+const NW = 70, NH = 22, RG = 6, TOP = 30;
+let layout = "depth", filter = "all";
+const nodes = {};
+data.forEach(d => {
+  const a = document.createElement("a");
+  a.className = "node" + (d.frontier ? " frontier" : "") + (d.priority === "after launch" ? " after" : "");
+  a.href = d.url; a.target = "_blank"; a.rel = "noopener";
+  a.style.setProperty("--k", `var(--${d.kind})`);
+  a.setAttribute("aria-label", `${d.id} ${d.title}, ${KIND[d.kind]}`);
+  const id = document.createElement("span"); id.textContent = d.id;
+  const t = document.createElement("span"); t.className = "t"; t.textContent = d.size;
+  a.append(id, t);
+  a.addEventListener("pointerenter", e => focusOn(d, a));
+  a.addEventListener("pointermove", moveTip);
+  a.addEventListener("pointerleave", clear);
+  a.addEventListener("focus", () => { focusOn(d, a); const r = a.getBoundingClientRect(); place(r.right, r.bottom); });
+  a.addEventListener("blur", clear);
+  stage.append(a); nodes[d.id] = a;
+});
+const edges = [];
+data.forEach(d => d.blockedBy.filter(b => byId[b]).forEach(b => {
+  const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  svg.append(p); edges.push({ from: b, to: d.id, el: p });
+}));
+
+function colKey(d) { return layout === "depth" ? d.depth : d.phase; }
+function draw() {
+  stage.querySelectorAll(".colhead,.colband").forEach(e => e.remove());
+  const keys = [...new Set(data.map(colKey))].sort((a, b) => a - b);
+  const CW = layout === "depth" ? 100 : 150;
+  const cols = Object.fromEntries(keys.map(k => [k, data.filter(d => colKey(d) === k).sort((a, b) => (a.repo > b.repo ? 1 : -1) || a.num - b.num)]));
+  const y = {};
+  const setY = () => keys.forEach(k => cols[k].forEach((d, i) => (y[d.id] = i)));
+  setY();
+  const avg = xs => xs.length ? xs.reduce((s, v) => s + v, 0) / xs.length : null;
+  for (let it = 0; it < 4; it++) {
+    keys.forEach(k => { cols[k].forEach(d => d._b = avg(d.blockedBy.filter(b => byId[b] && colKey(byId[b]) < k).map(b => y[b])) ?? y[d.id]); cols[k].sort((a, b) => a._b - b._b); setY(); });
+    [...keys].reverse().forEach(k => { cols[k].forEach(d => d._b = avg(kids[d.id].filter(c => colKey(byId[c]) > k).map(c => y[c])) ?? y[d.id]); cols[k].sort((a, b) => a._b - b._b); setY(); });
+  }
+  const pos = {};
+  let maxH = 0;
+  keys.forEach((k, ci) => {
+    const x = ci * CW;
+    const h = document.createElement("div"); h.className = "colhead"; h.style.left = x + "px";
+    h.textContent = layout === "depth" ? `Step ${k}` : `${k} · ${cols[k][0].phaseName}`;
+    if (layout === "phase") h.style.maxWidth = (CW - 8) + "px", h.style.overflow = "hidden", h.style.textOverflow = "ellipsis";
+    const band = document.createElement("div"); band.className = "colband"; band.style.left = (x - 12) + "px";
+    stage.append(h, band);
+    cols[k].forEach((d, i) => { const yy = TOP + i * (NH + RG); pos[d.id] = { x, y: yy }; const n = nodes[d.id]; n.style.left = x + "px"; n.style.top = yy + "px"; maxH = Math.max(maxH, yy + NH); });
+  });
+  stage.style.width = (keys.length * CW) + "px";
+  stage.style.height = (maxH + 10) + "px";
+  svg.setAttribute("width", keys.length * CW); svg.setAttribute("height", maxH + 10);
+  edges.forEach(e => {
+    const a = pos[e.from], b = pos[e.to];
+    let dpath;
+    if (a.x === b.x) { const x = a.x + NW, bend = x + 18 + Math.abs(b.y - a.y) * .08; dpath = `M${x},${a.y + NH / 2} C${bend},${a.y + NH / 2} ${bend},${b.y + NH / 2} ${x},${b.y + NH / 2}`; }
+    else { const x1 = a.x + NW, x2 = b.x, mx = (x1 + x2) / 2; dpath = `M${x1},${a.y + NH / 2} C${mx},${a.y + NH / 2} ${mx},${b.y + NH / 2} ${x2},${b.y + NH / 2}`; }
+    e.el.setAttribute("d", dpath);
+  });
+  applyFilter();
+}
+function visibleByFilter(d) {
+  if (filter === "all") return true;
+  if (filter === "frontier") return d.frontier;
+  return d.track === filter;
+}
+function applyFilter() {
+  const q = document.getElementById("q").value.trim().toUpperCase();
+  data.forEach(d => nodes[d.id].classList.toggle("dim", !(visibleByFilter(d) && (!q || d.id.includes(q) || d.title.toUpperCase().includes(q)))));
+  edges.forEach(e => { e.el.classList.remove("on"); e.el.classList.toggle("off", filter !== "all" || !!q); });
+}
+function focusOn(d, el) {
+  const up = reach(d.id, "up"), down = reach(d.id, "down");
+  const keep = new Set([d.id, ...up, ...down]);
+  data.forEach(x => nodes[x.id].classList.toggle("dim", !keep.has(x.id)));
+  el.classList.add("focus");
+  edges.forEach(e => { const on = keep.has(e.from) && keep.has(e.to) && ((up.has(e.from) || e.from === d.id) && (up.has(e.to) || e.to === d.id) || (down.has(e.to) && (down.has(e.from) || e.from === d.id))); e.el.classList.toggle("on", on); e.el.classList.toggle("off", !on); });
+  tip.replaceChildren();
+  const tt = document.createElement("div"); tt.className = "tt"; tt.textContent = `${d.repo}#${d.num} — ${d.title}`;
+  const tags = document.createElement("div");
+  d.labels.forEach(l => { const p = document.createElement("span"); p.className = "pill"; if (KIND[d.kind] === l) { const i = document.createElement("i"); i.style.setProperty("--k", `var(--${d.kind})`); p.append(i); } p.append(document.createTextNode(l)); tags.append(p); });
+  const row = (k, v) => { const r = document.createElement("div"); r.className = "row"; r.append(document.createTextNode(k + " ")); const b = document.createElement("b"); b.textContent = v; r.append(b); return r; };
+  tip.append(tt, tags,
+    row("Phase", `${d.phase} · ${d.phaseName}`), row("Size / priority", `${d.size} · ${d.priority}`),
+    row("Plan", trackName(d.track)),
+    row("Blocked by", d.blockedBy.length ? d.blockedBy.join(", ") : "nothing — startable"),
+    row("Unblocks", `${d.down} issue${d.down === 1 ? "" : "s"} downstream`));
+  if (NOTES[d.id]) tip.append(row("Note", NOTES[d.id]));
+  tip.style.display = "block";
+}
+function place(x, yv) {
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.min(x + 14, innerWidth - w - 8) + "px";
+  tip.style.top = (yv + 14 + h > innerHeight ? yv - h - 10 : yv + 14) + "px";
+}
+function moveTip(e) { place(e.clientX, e.clientY); }
+function clear() { tip.style.display = "none"; Object.values(nodes).forEach(n => n.classList.remove("focus")); applyFilter(); }
+function seg(id, cb) {
+  const g = document.getElementById(id);
+  g.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; g.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); cb(b.dataset.v); });
+}
+seg("g-layout", v => { layout = v; draw(); });
+seg("g-filter", v => { filter = v; applyFilter(); });
+document.getElementById("q").addEventListener("input", applyFilter);
+draw();
+
+const tables = document.getElementById("tables");
+const link = (id) => { const d = byId[id]; if (!d) { const s = document.createElement("span"); s.textContent = id; return s; } const a = document.createElement("a"); a.className = "id"; a.href = d.url; a.target = "_blank"; a.textContent = id; return a; };
+TRACKS.forEach(t => {
+  const rows = data.filter(d => d.track === t).sort((a, b) => a.phase - b.phase || b.down - a.down);
+  const h = document.createElement("h2"); h.className = "track-h"; h.textContent = `${trackName(t)} (${rows.length})`;
+  const sm = document.createElement("small"); sm.textContent = TRACK_NOTES[t]?.description || ""; h.append(sm);
+  const card = document.createElement("div"); card.className = "card";
+  const tb = document.createElement("table");
+  const thead = document.createElement("tr");
+  ["Issue", "Title", "Tags", "Phase", "Size", "Priority", "Blocked by", "Unblocks", "Note"].forEach(c => { const th = document.createElement("th"); th.textContent = c; thead.append(th); });
+  tb.append(thead);
+  rows.forEach(d => {
+    const tr = document.createElement("tr");
+    const c = () => { const td = document.createElement("td"); tr.append(td); return td; };
+    c().append(link(d.id));
+    c().textContent = d.title;
+    const tg = c(); d.labels.forEach(l => { const p = document.createElement("span"); p.className = "pill"; if (KIND[d.kind] === l) { const i = document.createElement("i"); i.style.setProperty("--k", `var(--${d.kind})`); p.append(i); } p.append(document.createTextNode(l)); tg.append(p); });
+    const ph = c(); ph.className = "num"; ph.textContent = d.phase;
+    c().textContent = d.size;
+    c().textContent = d.priority;
+    const bl = c(); if (d.blockedBy.length) d.blockedBy.forEach((b, i) => { if (i) bl.append(", "); bl.append(link(b)); }); else bl.textContent = "—";
+    const dn = c(); dn.className = "num"; dn.textContent = d.down;
+    c().textContent = NOTES[d.id] || "";
+    tb.append(tr);
+  });
+  card.append(tb); tables.append(h, card);
+});
+</script>
+</body>
+</html>

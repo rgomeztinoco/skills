@@ -1,0 +1,40 @@
+{
+  "epics": {
+    "postedin/cms#326": "CMS side",
+    "postedin/cms-sites#65": "site side"
+  },
+  "tracks": {
+    "A": {
+      "name": "Track A — you, now",
+      "description": "Setup and decisions that unblock the most work"
+    },
+    "B": {
+      "name": "Track B — agents, first CMS wave",
+      "description": "Startable now; worktree per issue, Graphite PR into develop, code review before submit"
+    },
+    "C": {
+      "name": "Track C — site foundations",
+      "description": "Once C327, S66 re-wire and the header/footer CMS issues land"
+    },
+    "D": {
+      "name": "Later — by phase",
+      "description": "Phase 3 grilled blocks, phase 4 renderers after S79, posts/glossary, import, content, launch"
+    },
+    "Z": {
+      "name": "After launch",
+      "description": "Deprioritised"
+    }
+  },
+  "notes": {
+    "C327": "In progress: Vercel side running now",
+    "C329": "Grilling session: now",
+    "C333": "Grill; split Lucide now, accent colour later",
+    "C350": "Grill: forms at launch (HubSpot embeds vs webhook)",
+    "C363": "Grill: copy 8k images vs keep Cloudinary (critical path)",
+    "C365": "Grill: HTML→Lexical converter (critical path)",
+    "S66": "Re-wire: split charts types out so foundations aren't blocked",
+    "C362": "Head of the 13-deep import chain",
+    "C346": "69 issues downstream",
+    "C347": "After C346"
+  }
+}

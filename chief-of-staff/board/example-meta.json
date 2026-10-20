@@ -1,0 +1,7 @@
+{
+  "name": "Postedin 3.0",
+  "slug": "postedin-3.0",
+  "port": 8765,
+  "epics": ["postedin/cms#326", "postedin/cms-sites#65"],
+  "repos": {"postedin/cms": "C", "postedin/cms-sites": "S"}
+}
