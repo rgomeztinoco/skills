@@ -1,6 +1,6 @@
 # Handoffs
 
-Grilling and implementation always run outside this session.
+Grilling, implementation and review always run outside this session.
 
 ## Grilling
 
@@ -14,11 +14,12 @@ Afterwards, read the outcome from GitHub (the ticket's body and comments, and an
 
 ## Implementation
 
-One ticket at a time, each in a fresh sub-agent: never two implementations in parallel, never in this session. Dispatch the next only after the previous one reports.
+One ticket at a time, each in a fresh sub-agent: never two implementations in parallel, never in this session. Dispatch the next only after the previous one reports, and only from the batch the owner named.
 
 The sub-agent runs `/implement` on the ticket. That skill is user-invoked, so tell the sub-agent: if the Skill tool refuses it, read `~/.claude/skills/implement/SKILL.md` and follow it step by step, likewise for the skills it calls.
 
 Brief the sub-agent with:
+
 - the issue and its repo;
 - where to work (a worktree, never a checkout another session uses);
 - the base branch: the previous ticket's branch when this ticket depends on it, else the trunk;
@@ -28,3 +29,13 @@ Brief the sub-agent with:
 Keep a reusable brief per epic in the board folder (`impl-brief.md`) and point each sub-agent at it.
 
 When the report arrives, check the PR exists and its checks run, relay owner questions, and update the board.
+
+## Review
+
+One review per feature, covering all its PRs at once; the owner still reviews PR by PR on Graphite. In T3 Code, launch a thread with `t3_thread_launch` in the feature's repo, in its own worktree on the tip branch; elsewhere, give the owner the prompt to copy. Keep the prompt short:
+
+```
+Review <owner/repo> PRs <#25–#30> as one change: a single review at the tip (<tip branch>). Give me a short summary of everything and a game plan to get it merged. When the plan needs a non-obvious action from me (a database change, a secret, a setting), add brief instructions for it. Keep it short and simple; I'll ask for details if needed. Keep the review in this thread for now; post nothing to GitHub this turn.
+```
+
+Fixes happen in that thread. Record its link in `notes.md`; the feature stays in review until its PRs merge.

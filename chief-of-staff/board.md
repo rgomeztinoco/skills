@@ -1,6 +1,6 @@
 # Board
 
-One board per epic, at `~/.boards/<slug>/`. It belongs to the owner: outside every repo, never committed, never in a temp dir. An epic can span several repos, and several chiefs of staff can run different epics at once, so the board is found by its `meta.json`, not by the folder you start in.
+One board per epic, or per repo with no epic, at `~/.boards/<slug>/`. It belongs to the owner: outside every repo, never committed, never in a temp dir. An epic can span several repos, and several chiefs of staff can run different epics at once, so the board is found by its `meta.json`, not by the folder you start in.
 
 ## Find it
 
@@ -8,7 +8,7 @@ One board per epic, at `~/.boards/<slug>/`. It belongs to the owner: outside eve
 2. Otherwise read every `~/.boards/*/meta.json` and keep the boards whose `repos` include the current repo (`gh repo view --json nameWithOwner`).
    - One match: use it.
    - Several: ask the owner which epic, listing each board's `name`.
-   - None: ask for the epic issue(s) and create a board.
+   - None: ask for the epic issue(s), or confirm the repo alone is the scope, and create a board.
 
 ## Layout
 
@@ -35,7 +35,7 @@ One board per epic, at `~/.boards/<slug>/`. It belongs to the owner: outside eve
  "repos": {"postedin/cms": "C", "postedin/cms-sites": "S"}}
 ```
 
-`repos` maps each repo to the one-letter prefix of its card ids (`C407`). Give each board its own `port`.
+`repos` maps each repo to the one-letter prefix of its card ids (`C407`). Give each board its own `port`. A repo with no epic has `"epics": []` and keeps its cards in `notes.md`.
 
 ## Run it
 
@@ -50,4 +50,4 @@ The server ships with this skill: `python3 <skill-dir>/board/server.py ~/.boards
 
 ## notes.md
 
-The handoff to the next session: current wave, what is running (agent, ticket, branch), what waits on the owner, and decisions not yet written to GitHub. Keep it under a screen; GitHub holds the history.
+The handoff to the next session: the game plan, what is running (agent, ticket, branch), each feature's PRs and review thread, what waits on the owner, and decisions not yet written to GitHub. Keep it under a screen; GitHub holds the history.

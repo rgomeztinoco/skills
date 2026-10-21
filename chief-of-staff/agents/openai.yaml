@@ -1,5 +1,5 @@
 interface:
   display_name: "Chief of staff"
-  short_description: "Orchestrate an epic from tickets to merged PRs"
+  short_description: "Survey an epic or repo and run the next step"
 policy:
   allow_implicit_invocation: false
