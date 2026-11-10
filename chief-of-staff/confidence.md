@@ -17,3 +17,5 @@ At intake, use any approval history already established in project memory, the c
 - **High**: ready once the ready check passes.
 - **Low** on origin, or on two signals: summarize it in the conversation for a second look, and build only after the owner approves it.
 - Tickets born from a grilling session start high: they need no second look.
+
+Confidence measures approval, not implementation readiness. Main tickets created by direction planning still need their individual grilling before they can be ready.

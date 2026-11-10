@@ -17,6 +17,7 @@ If several candidates match, ask the owner which scope they mean before updating
 Record the scope, including repo names and epic links, and the date last updated. Keep these sections short:
 
 - **Direction and intent.** The outcome the owner wants, current priorities, constraints, deliberate exclusions and why.
+- **Current plan.** The remaining high-level outcomes in dependency order, linked to their tickets once created. Record the reasons for material revisions as decisions and results change the plan. Before tickets exist, keep the direction handoff and what its session must return here.
 - **Decisions.** Still-relevant choices with their date, rationale and source. Distinguish owner decisions from agent proposals. Include ticket approval history needed to avoid asking again.
 - **Where we are.** The current phase, next steps and links to running work or review threads that another session needs to resume.
 - **Open questions.** Unresolved choices, what waits on the owner and decisions still to be propagated to GitHub.
@@ -27,4 +28,4 @@ Initialize memory from available project context. Leave unknown direction or int
 
 Read memory before surveying or planning. Check live ticket and PR status on GitHub; refresh stale progress in memory from that evidence. If a remembered decision conflicts with a newer explicit owner decision, record the newer decision and why it supersedes the old one. An issue edit alone does not overturn an owner decision.
 
-Before ending each turn, including a survey-only pass, save new direction, decisions, approval history, open questions and the next step. Edit the current summary rather than append a session transcript. Keep the file roughly a screen or two; link to issues for implementation details and history. Preserve rationale for active decisions while pruning obsolete progress. The file should let a fresh session explain where the project is going, why, and what to do next.
+Before ending each turn, including a survey-only pass, save new direction, the revised plan, decisions, approval history, open questions and the next step. Follow the skill's Evolving the plan rules when new results change the remaining work. Edit the current summary rather than append a session transcript. Keep the file roughly a screen or two; link to issues for implementation details and history. Preserve rationale for active decisions while pruning obsolete progress. The file should let a fresh session explain where the project is going, why, and what to do next.

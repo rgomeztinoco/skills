@@ -4,13 +4,27 @@ Grilling, implementation and review always run outside this session.
 
 ## Grilling
 
-Each grilling ticket gets its own session. In T3 Code, launch it with `t3_thread_launch` in the ticket's repo; elsewhere, give the owner a prompt to copy. The prompt is one line, because the ticket carries the context:
+Each direction handoff or named ticket gets its own session. In T3 Code, launch it with `t3_thread_launch` in the repo; elsewhere, give the owner a prompt to copy.
+
+### Direction planning without tickets
+
+When the owner selects `grill direction`, prepare a self-contained prompt. No existing ticket or epic is required. Include the repo, the owner's desired outcome, relevant verified project facts, binding decisions and their sources, constraints, exclusions and open questions. Include the memory path, but carry the needed context in the prompt itself.
+
+Tell the receiving session to use the grilling skill to agree on the general direction with the owner, then create the initial main GitHub tickets per [`ticket-formats.md`](ticket-formats.md). These describe outcomes, scope and dependencies, leaving implementation details for each ticket's individual grilling. Make the dependency order explicit and mark every main ticket `needs-grilling`. Treat the resulting plan as provisional and identify remaining uncertainties.
+
+The session returns ticket links, dependency order, binding decisions with rationale, and open questions. Record the agreed direction and current plan in memory, read the created issues from GitHub, and resume the normal survey. While planning is running, keep its session link or copyable handoff and pending outcome in memory so another pass can resume it.
+
+### Individual tickets
+
+For an existing ticket, the issue carries the context, so the prompt can be short:
 
 ```
 Grill <owner/repo>#<n> using the grilling skill.
 ```
 
-Afterwards, read the outcome from GitHub (the ticket's body and comments, and any new tickets it spawned) and propagate it.
+Include the current goal, relevant owner decisions and plan changes from memory when the issue does not already carry them. For a main ticket, tell the session to resolve its design choices, scope, acceptance criteria and dependencies, then update the issue with the agreed details. Remove `needs-grilling` only when its open design choices are resolved. Shared decisions that block multiple tickets can have separate grilling tickets.
+
+Afterwards, read the outcome from GitHub (the ticket's body and comments, and any new tickets it spawned) and propagate it using the skill's Evolving the plan rules.
 
 ## Implementation
 
