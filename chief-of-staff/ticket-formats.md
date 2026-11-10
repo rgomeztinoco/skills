@@ -21,17 +21,13 @@ Numbered. Each one offers concrete options.
 - <repo>#<n>: one line on what it waits for.
 ```
 
-## Glance card
+## Second-look summary
 
-`data/cards/<id>.json` on the board:
+In the conversation, link the ticket and briefly cover:
 
-```json
-{"id": "C328", "issueUpdatedAt": "<the issue's updatedAt>",
- "does": "one line",
- "assumes": [{"text": "one line", "flag": true}],
- "touches": ["area"],
- "skips": "what it leaves to other tickets",
- "risk": "low | medium | high", "riskWhy": "one line"}
-```
+- what it does;
+- what it assumes, identifying choices the owner has not made;
+- what it touches and leaves to other tickets;
+- the risk and why it needs a second look.
 
-`flag: true` marks an assumption the owner never decided.
+Ask the owner to approve it, request changes, or resolve the open choices. If the issue changes after the summary, refresh it before requesting approval.

@@ -26,9 +26,9 @@ Brief the sub-agent with:
 - the epic's owner rules that the issue does not repeat;
 - what to report: PR URL, branch, what changed, checks run, review findings, owner questions.
 
-Keep a reusable brief per epic in the board folder (`impl-brief.md`) and point each sub-agent at it.
+Include the relevant direction, decisions and shared epic context from project memory in each sub-agent's brief.
 
-When the report arrives, check the PR exists and its checks run, relay owner questions, and update the board.
+When the report arrives, check the PR exists and its checks run, relay owner questions, and report the ticket's stage in the conversation.
 
 ## Review
 
@@ -38,4 +38,4 @@ One review per feature, covering all its PRs at once; the owner still reviews PR
 Review <owner/repo> PRs <#25–#30> as one change: a single review at the tip (<tip branch>). Give me a short summary of everything and a game plan to get it merged. When the plan needs a non-obvious action from me (a database change, a secret, a setting), add brief instructions for it. Keep it short and simple; I'll ask for details if needed. Keep the review in this thread for now; post nothing to GitHub this turn.
 ```
 
-Fixes happen in that thread. Record its link in `notes.md`; the feature stays in review until its PRs merge.
+Fixes happen in that thread. Record its link in project memory and include it in the report; the feature stays in review until its PRs merge.

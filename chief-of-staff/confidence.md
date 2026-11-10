@@ -4,7 +4,7 @@ A ticket's confidence answers one question: does the owner need a second look be
 
 ## Ask the owner
 
-At intake, ask once for the whole epic: which tickets, or which batches, did you write or approve yourself, and which came out of a grilling session? Record the answer in `notes.md`.
+At intake, use any approval history already established in project memory, the conversation or GitHub. If it is missing, ask once for the whole scope which tickets or batches the owner wrote or approved, and which came out of a grilling session. Record the answer in project memory for later passes.
 
 ## Score
 
@@ -14,6 +14,6 @@ At intake, ask once for the whole epic: which tickets, or which batches, did you
 | Assumptions | Only binding decisions and facts from the code | Choices the owner never made: defaults, value sets, layouts |
 | Complexity | One seam, additive, easy to revert | Shared schema, migrations, live sites, several repos |
 
-- **High**: ready once the ready check passes. No card.
-- **Low** on origin, or on two signals: card on the board, built only after the owner's ✓.
+- **High**: ready once the ready check passes.
+- **Low** on origin, or on two signals: summarize it in the conversation for a second look, and build only after the owner approves it.
 - Tickets born from a grilling session start high: they need no second look.
