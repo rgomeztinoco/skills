@@ -1,7 +1,7 @@
 ---
 name: implement
 description: "Implement work from a specification or tickets through verification, review, and submission."
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 First assign yourself to the issue.
@@ -12,7 +12,7 @@ Use `/tdd` at agreed seams when a focused failing test can express the behavior.
 
 After each coherent change, run the relevant test file and typecheck. Run the full test suite once at the end.
 
-For frontend changes, run the application and visually verify.
+Show the changes, run the application and visually verify them, include screenshots or recordings in your response and in the pull request. Showing your work in a visual manner helps reviewers understand the impact of your changes and is really important.
 
 When implementation and checks are complete, run `/code-review` and address its findings.
 
