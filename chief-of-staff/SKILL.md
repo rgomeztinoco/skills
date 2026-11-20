@@ -36,7 +36,7 @@ Where it stands: <one line per stage that has anything in it>
 
 1. Grill "auth model", "media schema": unblocks 6 tickets.
 2. Implement 4 ready tickets: <names>.
-3. Review "Sites editor" (#25–#30).
+3. Review "Sites editor" stack, PRs [#25–#30](<links>): last step before merge.
 4. Second look: 3 tickets await your approval: <names>.
 
 Commands: grill direction · grill <tickets> · implement <N | tickets> · review <feature>
@@ -58,7 +58,7 @@ Run only what the owner names, then report and stop.
 
 - **Grill direction** with a self-contained handoff, or **grill** the named tickets individually, per [`handoffs.md`](handoffs.md).
 - **Implement** exactly the named tickets, or the first N ready ones in plan order, one at a time, per [`handoffs.md`](handoffs.md). Done when the last of them reports.
-- **Review** the named feature in its own thread, per [`handoffs.md`](handoffs.md).
+- **Review** the named feature in its own thread with the `review-pr` skill, per [`handoffs.md`](handoffs.md).
 
 On GitHub an issue closes when its work is done, so its blocking links clear. Track its PR as awaiting merge until it merges.
 

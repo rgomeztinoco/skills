@@ -38,18 +38,18 @@ Brief the sub-agent with:
 - where to work (a worktree, never a checkout another session uses);
 - the base branch: the previous ticket's branch when this ticket depends on it, else the trunk;
 - the epic's owner rules that the issue does not repeat;
-- what to report: PR URL, branch, what changed, checks run, review findings, owner questions.
+- what to report: PR links with titles, branch, what changed, visual evidence, ready status per `pr-ready`, review findings, owner questions.
 
 Include the relevant direction, decisions and shared epic context from project memory in each sub-agent's brief.
 
-When the report arrives, check the PR exists and its checks run, relay owner questions, and report the ticket's stage in the conversation.
+When the report arrives, check the PR exists and is ready per `pr-ready` (checks green, comments addressed), relay owner questions, and report the ticket's stage in the conversation.
 
 ## Review
 
-One review per feature, covering all its PRs at once; the owner still reviews PR by PR on Graphite. In T3 Code, launch a thread with `t3_thread_launch` in the feature's repo, in its own worktree on the tip branch; elsewhere, give the owner the prompt to copy. Keep the prompt short:
+One review per feature, covering all its PRs at once with the `review-pr` skill; the owner still reviews PR by PR. Launch a thread in its own worktree on the tip branch; if you can't, give the owner the prompt to copy:
 
 ```
-Review <owner/repo> PRs <#25–#30> as one change: a single review at the tip (<tip branch>). Give me a short summary of everything and a game plan to get it merged. When the plan needs a non-obvious action from me (a database change, a secret, a setting), add brief instructions for it. Keep it short and simple; I'll ask for details if needed. Keep the review in this thread for now; post nothing to GitHub this turn.
+Review <owner/repo> PRs <links with titles> as one change at the tip (<tip branch>) using the review-pr skill.
 ```
 
 Fixes happen in that thread. Record its link in project memory and include it in the report; the feature stays in review until its PRs merge.

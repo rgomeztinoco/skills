@@ -1,0 +1,5 @@
+interface:
+  display_name: "PR ready"
+  short_description: "Get PRs green with every review comment addressed"
+policy:
+  allow_implicit_invocation: true
